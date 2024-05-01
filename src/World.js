@@ -23,8 +23,8 @@ var FSHADER_SOURCE = `
   uniform vec4 u_FragColor;
   void main() {
     gl_FragColor = u_FragColor;
-    //gl_FragColor = vec4(v_UV, 1.0, 1.0);
-  }`
+    gl_FragColor = vec4(v_UV, 1.0, 1.0);   //changes colors of the animal to a neon blue-pink
+  }` // add a line saying that if I don't want to use a specific texture or not in fragment shader.
 
 //Global Variables
 let canvas;
@@ -130,6 +130,7 @@ let g_globalAngle = 0;
 let g_globalAngleY = 0;
 let g_yellowAngle = 0;
 let g_yellowAngleRight = 0;
+let g_magentaAngle = 0;
 let g_left_footangle = 0;
 let g_midLegAngle = 0;   //Chat gpt helped me debug my slider control for a second level joint (I originally had but got rid of and couldn't get it to work anymore when I tried implementing again). So it suggested me to add this line of code
 let g_yellowAnimation=false;  //Always start without animation when starting up
@@ -313,171 +314,54 @@ function renderAllShapes(){
   var globalRotMat=new Matrix4().rotate(g_globalAngle,0,1,0);
   gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
 
-  //Pass the matrix to u_ModelMatrix attribute (ChatGPT helped me create this y-axis slider part)
-  var globalRotMat = new Matrix4().rotate(g_globalAngle, 0, 1, 0).rotate(g_globalAngleY, 1, 0, 0);
-  gl.uniformMatrix4fv(u_GlobalRotateMatrix, false, globalRotMat.elements);
-
-
   // Clear <canvas>  (rendering points)
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); 
+  // var len = g_shapesList.length;
 
-  //Draw Chicken Body
+  // for(var i = 0; i < len; i++) {
+  //   g_shapesList[i].render();
+
+  // }
+
+  //Draw a test triangle
+  //drawTriangle3D([ -1.0, 0.0, 0.0,   -0.5, -1.0, 0.0,   0.0, 0.0, 0.0 ]);
+
+
+  //Draw a cube (red one)
   var body = new Cube();
-  body.color = [1.0, 1.0, 1.0, 1.0];
-  body.matrix.scale(0.6,0.6,0.6);
+  body.color = [1.0, 0.0, 0.0, 1.0];
+  body.matrix.translate(-0.25, -0.75, 0.0);
+  body.matrix.rotate(-5,1,0,0);
+  body.matrix.scale(0.5, 0.3, 0.5);         //this one happens first! Right to left matrix multiplication
   body.render();
 
-  // Left Wing
-  var left_wing = new Cube();
-  left_wing.color = [1.0, 1.0, 1.0, 1.0];
-  left_wing.matrix.translate(0.0, 0.10, -0.35)
-  left_wing.matrix.scale(0.5, 0.4, -0.10)
-  left_wing.render();
-
-  //Right Wing
-  var right_wing = new Cube();
-  right_wing.color = [1.0, 1.0, 1.0, 1.0];
-  right_wing.matrix.translate(0.0, 0.10, 0.35);
-  right_wing.matrix.scale(0.5, 0.4, 0.10); 
-  right_wing.render();
-  
-  //Head
-  var head = new Cube();
-  head.color = [1.0,1.0,1.0,1.0]
-  head.matrix.translate(-0.35, 0.3, 0.0);
-  head.matrix.scale(0.25, 0.5, 0.5); 
-  head.render();
-
-  //beak
-  var beak = new Cube();
-  beak.color = [1, 1, 0.0, 1.0];
-  beak.matrix.translate(-0.57, 0.3, 0);
-  beak.matrix.scale(0.20, 0.20, 0.5); 
-  beak.render();
-
-  //Wattle (red part)
-  var wattle = new Cube();
-  wattle.color = [1.0, 0.0, 0.0, 1.0];
-  wattle.matrix.translate(-0.52, 0.20, -0.001)
-  wattle.matrix.rotate(g_wattleAnimationrock, 1, 0, 0);
-  wattle.matrix.scale(0.10, 0.28, 0.2); 
-  wattle.render();
-
-
-  //left eye
-  var left_eye = new Cube();
-  left_eye.color = [0.0, 0.0, 0.0, 1.0];
-  left_eye.matrix.translate(-0.52001, 0.45, 0.20);
-  left_eye.matrix.scale(0.1, 0.1, 0.10);
-  left_eye.render();
-  
-  //Right Eye
-  var right_eye = new Cube();
-  right_eye.color = [0.0, 0.0, 0.0, 1.0];
-  right_eye.matrix.translate(-0.52001, 0.45, -0.20);
-  right_eye.matrix.scale(0.1, 0.1, 0.10);
-  right_eye.render();
-
-  //upper left leg
-  var upper_leg1 = new Cube();
-  upper_leg1.color = [1.0, 1.0, 1.0, 1.0];
-  upper_leg1.matrix.translate(0, -0.25, -0.15)
-  upper_leg1.matrix.rotate(g_yellowAngle, 0, 0, 1);  // Rotate around the z-axis
-  upper_leg1.matrix.scale(0.31,0.15,0.13);
-  upper_leg1.render();
-
-  //upper right leg
-  var upper_leg2 = new Cube();
-  upper_leg2.color = [1.0, 1.0, 1.0, 1.0];
-  upper_leg2.matrix.translate(0, -0.25, 0.15)
-  upper_leg2.matrix.rotate(g_yellowAngleRight, 0, 0, 1);  // Rotate around the z-axis
-  upper_leg2.matrix.scale(0.31,0.15,0.13);
-  upper_leg2.render();
-
-  // mid left leg
-  var mid_leg1 = new Cube();
-  mid_leg1.color = [1, 1, 0.0, 1.0];
-  mid_leg1.matrix.translate(0, -0.45, -0.15); // Translate to the base of the leg
-  mid_leg1.matrix.rotate(g_yellowAngle, 0, 0, 1);  // Rotate around the z-axis
-  mid_leg1.matrix.rotate(g_midLegAngle, 0, 0, 1);  // Rotate the mid leg //Chat gpt helped me debug my slider control for a second level joint (I originally had but got rid of and couldn't get it to work anymore when I tried implementing again). So it suggested me to add this snippet of code
-  var left_foot_coordMat = new Matrix4(mid_leg1.matrix); //Debugged chat gpt suggested code
-  mid_leg1.matrix.scale(0.08,0.5,0.08);
-  mid_leg1.render();
-
-
-  // //mid right leg
-  var mid_leg2 = new Cube();
-  mid_leg2.color = [1, 1, 0.0, 1.0];
-  mid_leg2.matrix.translate(0, -0.45, 0.15)
-  //mid_leg2.matrix.rotate(-g_yellowAngleRight, 0, 0, 1);  // Rotate around the z-axis
-  mid_leg2.matrix.rotate(g_yellowAngleRight, 0, 0, 1);  // Rotate around the z-axis
-  var right_foot_coordMat = new Matrix4(mid_leg2.matrix);
-  mid_leg2.matrix.scale(0.08,0.5,0.08);
-  mid_leg2.render();
-
-  // left foot
-  var left_foot = new Cube();
-  left_foot.color = [1, 1, 0.0, 1.0];
-  left_foot.matrix = left_foot_coordMat;   //Chat gpt helped me debug my slider control for a second level joint (I originally had but got rid of and couldn't get it to work anymore when I tried implementing again). So it suggested me to add this snippet of code
-  left_foot.matrix.translate(0.0, -0.45, 0)
-  left_foot.matrix.rotate(g_left_footangle, 0, 1, 0);   //Chat gpt helped me debug my slider control for a second level joint (I originally had but got rid of and couldn't get it to work anymore when I tried implementing again). So it suggested me to add this snippet of code
-  left_foot.matrix.scale(0.2,0.10,0.2);
-  left_foot.matrix.translate(-0.3, 1.5, 0)
-  left_foot.render();
-
-
-  //right foot
-  var right_foot = new Cube();
-  right_foot.color = [1, 1, 0.0, 1.0];
-  right_foot.matrix = right_foot_coordMat;
-  right_foot.matrix.translate(0.0, -0.45, 0.0)
-  right_foot.matrix.scale(0.2,0.10,0.2);
-  right_foot.matrix.translate(-0.3, 1.5, 0)
-  // right_foot.matrix.scale(0.2,0.10,0.2);
-  right_foot.render();
-
-  // //Party hat!!
-   var hat = new Pyramid();
-   hat.color = [0.0, 1.0, 0.0, 1.0];
-   hat.matrix.translate(-0.35, 0.65, 0.0);
-   hat.matrix.scale(0.2, 0.2, 0.2);
-   hat.render();
-
-//Prof's drawing
-  // //Draw a cube (red one)
-  // var body = new Cube();
-  // body.color = [1.0, 0.0, 0.0, 1.0];
-  // body.matrix.translate(-0.25, -0.75, 0.0);
-  // body.matrix.rotate(-5,1,0,0);
-  // body.matrix.scale(0.5, 0.3, 0.5);         //this one happens first! Right to left matrix multiplication
-  // body.render();
-
-  // // Draw a yellow left arm
-  // var leftArm = new Cube();
-  // leftArm.color = [1,1,0,1];
-  // leftArm.matrix.setTranslate(0,-0.5,0.0);
-  // leftArm.matrix.rotate(-5, 1, 0, 0);
-  // // leftArm.matrix.rotate(-g_yellowAngle, 0, 0, 1);  //2.6: rotate the yellow joint
+  // Draw a yellow left arm
+  var leftArm = new Cube();
+  leftArm.color = [1,1,0,1];
+  leftArm.matrix.setTranslate(0,-0.5,0.0);
+  leftArm.matrix.rotate(-5, 1, 0, 0);
   // leftArm.matrix.rotate(-g_yellowAngle, 0, 0, 1);  //2.6: rotate the yellow joint
-  // var yellowCoordinatesMat = new Matrix4(leftArm.matrix);
-  // leftArm.matrix.scale(0.25, 0.7, 0.5);
-  // leftArm.matrix.translate(-0.5, 0, 0);
-  // leftArm.render();
+  leftArm.matrix.rotate(-g_yellowAngle, 0, 0, 1);  //2.6: rotate the yellow joint
+  var yellowCoordinatesMat = new Matrix4(leftArm.matrix);
+  leftArm.matrix.scale(0.25, 0.7, 0.5);
+  leftArm.matrix.translate(-0.5, 0, 0);
+  leftArm.render();
 
-  // //Test box (pink box)
-  // var box = new Cube();
-  // box.color = [1,0,1,1];
-  // box.matrix = yellowCoordinatesMat;
-  // box.matrix.translate(0,0.65,0.0,0);
-  // box.matrix.rotate(g_magentaAngle, 0, 0, 1);
-  // box.matrix.scale(0.3, 0.3, 0.3);
-  // box.matrix.translate(-0.5,0,-0.001);
-  // box.render();
+  //Test box (pink box)
+  var box = new Cube();
+  box.color = [1,0,1,1];
+  box.matrix = yellowCoordinatesMat;
+  box.matrix.translate(0,0.65,0.0,0);
+  box.matrix.rotate(g_magentaAngle, 0, 0, 1);
+  box.matrix.scale(0.3, 0.3, 0.3);
+  box.matrix.translate(-0.5,0,-0.001);
+  box.render();
 
   //Check the time at the end of the function, and show on web page
   var duration = performance.now() - startTime;
   sendTextToHTML("ms: " + Math.floor(duration) + " fps: " + Math.floor(10000/duration)/10, "numdot");
 }
+
 
 // Set the text of a HTML element
 function sendTextToHTML(text, htmlID) {
