@@ -25,12 +25,12 @@ class Cube{
 // I originally was printing cubes on the 1st quadrant which I didn't like.
     
     // Front face (already provided) UV
-    drawTriangle3DUV([0,0,0,    1,1,0,    1,0,0 ], [0, 0, 1, 1, 1, 0]);
-    drawTriangle3DUV([0,0,0,    0,1,0,    1,1,0 ], [0, 0, 0, 1, 1, 1]);
+    drawTriangle3DUV([0,0,0,    1,1,0,    1,0,0 ], [0,0,  1,1,  1,0]);
+    drawTriangle3DUV([0,0,0,    0,1,0,    1,1,0 ], [0,0,  0,1,  1,1]);
 
     // Right face
-    drawTriangle3DUV([1,0,0,    1,1,1,    1,0,1 ], [0, 0, 1, 1, 1, 0]);
-    drawTriangle3DUV([1,0,0,    1,1,0,    1,1,1 ], [0, 0, 0, 1, 1, 1]);
+    drawTriangle3DUV([1,0,0,    1,1,1,    1,0,1 ], [0,0,  1,1, 1,0]);
+    drawTriangle3DUV([1,0,0,    1,1,0,    1,1,1 ], [0,0,  0,1, 1,1]);
 
     // Back face
     drawTriangle3DUV([0,0,1,    1,1,1,    1,0,1 ], [0, 0, 1, 1, 1, 0]);
