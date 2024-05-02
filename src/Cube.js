@@ -6,11 +6,14 @@ class Cube{
         // this.size = 5.0;
         // this.segments = 3;
         this.matrix = new Matrix4();
+        this.textureNum=-1;
     }
     render() {
         // var xy = this.position;
         var rgba = this.color;
         // var size = this.size;
+
+        gl.uniform1i(u_whichTexture, this.textureNum);
 
         //Pass color of a point to u_FragColor var
         gl.uniform4f(u_FragColor, rgba[0], rgba[1], rgba[2], rgba[3]);
