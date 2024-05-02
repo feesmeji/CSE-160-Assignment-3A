@@ -49,6 +49,8 @@ let u_ModelMatrix;
 let u_ProjectionMatrix;
 let u_ViewMatrix;
 let u_GlobalRotateMatrix;
+let u_Sampler0;
+let u_whichTexture;
 
 function setupWebGL(){
   // Retrieve <canvas> element
@@ -112,12 +114,6 @@ function connectVariablesToGLSL(){
     return;
   }
 
-  // Set an initial value for this matrix to identify
-  var identityM = new Matrix4();
-  gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
-
-
-
   u_ProjectionMatrix = gl.getUniformLocation(gl.program, 'u_ProjectionMatrix');
   if(!u_ProjectionMatrix){
     console.log('Failed to get the storage location of u_ProjectionMatrix')
@@ -136,6 +132,11 @@ function connectVariablesToGLSL(){
     console.log('Failed to get the storage location of u_whichTexture');
     return false;
   }
+
+  // Set an initial value for this matrix to identify
+  var identityM = new Matrix4();
+  gl.uniformMatrix4fv(u_ModelMatrix, false, identityM.elements);
+
   gl.uniformMatrix4fv(u_ProjectionMatrix, false, identityM.elements); 
   gl.uniformMatrix4fv(u_ViewMatrix, false, identityM.elements);   //If professor's guides make things dissapear, probably forgot to initialize something. 
 }
@@ -380,6 +381,14 @@ function updateAnimationAngles(){ //put all of the different angles that we are 
 function renderAllShapes(){
 
   var startTime = performance.now();
+
+  // Pass the projection matrix
+  var projMat = new Matrix4();
+  gl.uniformMatrix4fv(u_ProjectionMatrix, false, projMat.elements);
+
+  // Pass the view matrix
+  var viewMat=new Matrix4();
+  gl.uniformMatrix4fv(u_ViewMatrix, false, viewMat.elements);
 
   //Pass the matrix to u_ModelMatrix attribute
   var globalRotMat=new Matrix4().rotate(g_globalAngle,0,1,0);
