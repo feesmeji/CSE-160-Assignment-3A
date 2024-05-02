@@ -113,6 +113,13 @@ function connectVariablesToGLSL(){
     console.log('Failed to get the storage location of u_ProjectionMatrix')
     return
   }
+
+  // Get the storage location of u_Sampler
+  u_Sampler0 = gl.getUniformLocation(gl.program, 'u_Sampler0');
+  if (!u_Sampler0) {
+    console.log('Failed to get the storage location of u_Sampler0');
+    return false;
+  }
   gl.uniformMatrix4fv(u_ProjectionMatrix, false, identityM.elements); 
   gl.uniformMatrix4fv(u_ViewMatrix, false, identityM.elements);   //If professor's guides make things dissapear, probably forgot to initialize something. 
 }
@@ -206,33 +213,30 @@ canvas.addEventListener('mouseup', function(ev) {
 });
 }
 
-function initTextures(gl, n) {
-  var texture = gl.createTexture();   // Create a texture object
-  if (!texture) {
-    console.log('Failed to create the texture object');
-    return false;
-  }
-
-  // Get the storage location of u_Sampler
-  var u_Sampler0 = gl.getUniformLocation(gl.program, 'u_Sampler0');
-  if (!u_Sampler0) {
-    console.log('Failed to get the storage location of u_Sampler0');
-    return false;
-  }
-  var image = new Image();  // Create the image object
+function initTextures() {
+  var image = new Image();   // Create a texture object
   if (!image) {
     console.log('Failed to create the image object');
     return false;
   }
-  // Register the event handler to be called on loading an image
-  image.onload = function(){ loadTexture(gl, n, texture, u_Sampler0, image); };
-  // Tell the browser to load an image
+
+  image.onload = function(){ sendTextureToGLSL(image); }; //this will setup function that will run when image is done laoding, runs after laoding is completed
+  
   image.src = '../src/sky.jpg';
 
   return true;
+
+
+// Add more texture loading
 }
 
-function loadTexture(gl, n, texture, u_Sampler, image) {
+function sendTextureToGLSL(image) {
+
+  var texture = gl.createTexture();
+  if(!texture){
+    console.log('Failed to create the texture object');
+    return false
+  }
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1); // Flip the image's y axis
   // Enable texture unit0
   gl.activeTexture(gl.TEXTURE0);
@@ -245,11 +249,11 @@ function loadTexture(gl, n, texture, u_Sampler, image) {
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
   
   // Set the texture unit 0 to the sampler
-  gl.uniform1i(u_Sampler, 0);
+  gl.uniform1i(u_Sampler0, 0);
   
-  gl.clear(gl.COLOR_BUFFER_BIT);   // Clear <canvas>
+  //gl.clear(gl.COLOR_BUFFER_BIT);   // Clear <canvas>
 
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, n); // Draw the rectangle
+  //gl.drawArrays(gl.TRIANGLE_STRIP, 0, n); // Draw the rectangle
 }
 
 
@@ -279,7 +283,7 @@ function main() {
   //renderAllShapes();
   requestAnimationFrame(tick);
 
-  initTextures(gl,0);
+  initTextures();
 }
 
 //var g_shapesList = [];
