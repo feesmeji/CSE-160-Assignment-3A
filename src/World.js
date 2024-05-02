@@ -300,6 +300,9 @@ function main() {
   //renderAllShapes();
   requestAnimationFrame(tick);
 
+  //canvas.onmousemove = function(ev) {if(ev.buttons == 1)}
+  document.onkeydown = keydown;
+
   initTextures();
 }
 
@@ -376,6 +379,18 @@ function updateAnimationAngles(){ //put all of the different angles that we are 
   if(g_wattleAnimation){
     g_wattleAnimationrock = (-34 * Math.sin(g_seconds));
   }
+}
+
+function keydown(ev) {
+  if(ev.keyCode == 39) { // The right arrow key was pressed
+    g_eye[0] += 0.2;
+  } else 
+  if (ev.keyCode == 37) { // The left arrow key was pressed
+    g_eye[0] -= 0.2;
+  }
+
+  renderAllShapes();
+  console.log(ev.keyCode);
 }
 
 var g_eye=[0,0,3];
