@@ -22,6 +22,7 @@ var FSHADER_SOURCE = `
   varying vec2 v_UV;
   uniform vec4 u_FragColor;
   uniform sampler2D u_Sampler0;
+  uniform sampler2D u_Sampler1;
   uniform int u_whichTexture;
   void main() {
     if (u_whichTexture == -2){
@@ -32,6 +33,9 @@ var FSHADER_SOURCE = `
     }
     else if (u_whichTexture == 0){      //use texture
       gl_FragColor = texture2D(u_Sampler0, v_UV);
+    }
+    else if (u_whichTexture == 1){
+      gl_FragColor = texture2D(u_Sampler1, v_UV);
     }
     else{                  //Error, put red
       gl_FragColor = vec4(1, 0.2, 0.2, 1);
@@ -50,6 +54,7 @@ let u_ProjectionMatrix;
 let u_ViewMatrix;
 let u_GlobalRotateMatrix;
 let u_Sampler0;
+let u_Sampler1;
 let u_whichTexture;
 
 function setupWebGL(){
@@ -124,6 +129,12 @@ function connectVariablesToGLSL(){
   u_Sampler0 = gl.getUniformLocation(gl.program, 'u_Sampler0');
   if (!u_Sampler0) {
     console.log('Failed to get the storage location of u_Sampler0');
+    return false;
+  }
+
+  u_Sampler1 = gl.getUniformLocation(gl.program, 'u_Sampler1');
+  if (!u_Sampler1) {
+    console.log('Failed to get the storage location of u_Sampler1');
     return false;
   }
 
@@ -232,14 +243,26 @@ canvas.addEventListener('mouseup', function(ev) {
 
 function initTextures() {
   var image = new Image();   // Create a texture object
+  var image2 = new Image();
   if (!image) {
     console.log('Failed to create the image object');
     return false;
   }
 
-  image.onload = function(){ sendTextureToGLSL(image); }; //this will setup function that will run when image is done laoding, runs after laoding is completed
+  if (!image2) {
+    console.log('Failed to create the image2 object');
+    return false;
+  }
+
+  
+  image.onload = function(){ sendTextureToGLSL(image,0); }; //this will setup function that will run when image is done laoding, runs after laoding is completed
   
   image.src = '../src/sky.jpg';
+
+
+  image2.onload = function(){ sendTextureToGLSL(image2,1); }; //this will setup function that will run when image is done laoding, runs after laoding is completed
+  
+  image2.src = '../src/grass.jpg';
 
   return true;
 
@@ -247,31 +270,28 @@ function initTextures() {
 // Add more texture loading
 }
 
-function sendTextureToGLSL(image) {
-
+function sendTextureToGLSL(image, textureUnit) {
   var texture = gl.createTexture();
-  if(!texture){
+  if (!texture) {
     console.log('Failed to create the texture object');
-    return false
+    return null;
   }
-  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1); // Flip the image's y axis
-  // Enable texture unit0
-  gl.activeTexture(gl.TEXTURE0);
-  // Bind the texture object to the target
+
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
+  gl.activeTexture(gl.TEXTURE0 + textureUnit);
   gl.bindTexture(gl.TEXTURE_2D, texture);
-
-  // Set the texture parameters
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-  // Set the texture image
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
-  
-  // Set the texture unit 0 to the sampler
-  gl.uniform1i(u_Sampler0, 0);
-  
-  //gl.clear(gl.COLOR_BUFFER_BIT);   // Clear <canvas>
 
-  //gl.drawArrays(gl.TRIANGLE_STRIP, 0, n); // Draw the rectangle
+  if (textureUnit === 0) {
+    gl.uniform1i(u_Sampler0, textureUnit);
+  } else if (textureUnit === 1) {
+    gl.uniform1i(u_Sampler1, textureUnit);
+  }
+
+  return texture;
 }
+
 
 
 function main() {
@@ -436,7 +456,7 @@ function renderAllShapes(){
   //Draw the sky
   var sky = new Cube();
   sky.color = [1, 0, 0, 1];
-  sky.textureNum=0;
+  sky.textureNum= 0;
   sky.matrix.scale(50,50,50);
   sky.matrix.translate(-0.5, -0.5, -0.5);
   sky.render();
@@ -465,7 +485,7 @@ function renderAllShapes(){
   //Test box (pink box)
   var box = new Cube();
   box.color = [1,0,1,1];
-  box.textureNum = -1;
+  box.textureNum = 1;
   box.matrix = yellowCoordinatesMat;
   box.matrix.translate(0,0.65,0.0,0);
   box.matrix.rotate(g_magentaAngle, 0, 0, 1);
