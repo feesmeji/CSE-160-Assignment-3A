@@ -23,6 +23,10 @@ class Cube{
         gl.uniformMatrix4fv(u_ModelMatrix, false, this.matrix.elements);        
         
     
+// Section 1: Drawtriangle3DUV
+//CHATGPT helped me realize that I can use all of the triangle coordinates that I used in section 2 of my code and just adding the extra bracket to each line of code
+//to allow webgl to draw the uv colors.
+//It also helped me debug the 3DUV coordinates along with the drawtriangle3d coordinates, as just copying and pasting coordinates code from section 2 was not giving smooth color on each cube side.
     // Front face (already provided) UV
     drawTriangle3DUV([0,0,0,    1,1,0,    1,0,0 ], [0,0,  1,1,  1,0]);
     drawTriangle3DUV([0,0,0,    0,1,0,    1,1,0 ], [0,0,  0,1,  1,1]);
@@ -36,20 +40,20 @@ class Cube{
     drawTriangle3DUV( [0,1,0,   1,1,1,  1,1,0], [0,0,  1,1,  1,0]);
     
     //Bottom of cube
-    drawTriangle3DUV( [0,0,0,   0,0,1,  1,0,1], [0,0,  1,1,  1,0]);
-    drawTriangle3DUV( [0,0,0,   1,0,1,  1,0,0], [0,0,  0,1,  1,1]);
+    drawTriangle3DUV( [0,0,0,   0,0,1,  1,0,1], [0,0,  0,1,  1,1]);
+    drawTriangle3DUV( [0,0,0,   1,0,1,  1,0,0], [0,0,  1,1,  1,0]);
 
     //Right side of cube
-    drawTriangle3DUV([1,1,1,   1,0,1,  1,0,0], [0,0,  1,1,  1,0]);// right side of cube triangle 1
-    drawTriangle3DUV([1,1,1,   1,1,0,  1,0,0], [0,0,  0,1,  1,1]);//right side of cube triangle 2
+    drawTriangle3DUV([1,0,0,   1,1,1,  1,0,1], [0,0,  1,1,  1,0]);// right side of cube triangle 1
+    drawTriangle3DUV([1,0,0,   1,1,0,  1,1,1], [0,0,  0,1,  1,1]);//right side of cube triangle 2
 
     //Left side of triangle
-    drawTriangle3DUV([0,0,0,   0,1,0,   0,1,1], [0,0,  0,1,  1,1]); //left side of cube triangle 1
-    drawTriangle3DUV([0,0,0,   0,0,1,   0,1,1], [0,0,  1,1,  1,0]); //left side of cube triangle 2
+    drawTriangle3DUV([0,0,0,   0,1,1,   0,0,1], [0,0,  1,1,  1,0]); //left side of cube triangle 1
+    drawTriangle3DUV([0,0,0,   0,1,0,   0,1,1], [0,0,  0,1,  1,1]); //left side of cube triangle 2
 
 // ----------------UV End
 
-
+// Section 2: triangles
     //Front of cube
     drawTriangle3D( [0,0,0,  1,1,0,  1,0,0 ]);
     drawTriangle3D( [0,0,0,  0,1,0,  1,1,0 ]);
