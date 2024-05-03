@@ -24,9 +24,11 @@ class Cube{
         
     
 // Section 1: Drawtriangle3DUV
-//CHATGPT helped me realize that I can use all of the triangle coordinates that I used in section 2 of my code and just adding the extra bracket to each line of code
-//to allow webgl to draw the uv colors.
-//It also helped me debug the 3DUV coordinates along with the drawtriangle3d coordinates, as just copying and pasting coordinates code from section 2 was not giving smooth color on each cube side.
+
+//CHATGPT helped me realize that I can use all of the triangle coordinates that I used in section 2 of my code and just adding the extra bracket to each line of code. 
+//to allow webgl to draw the uv colors. I originally used its UV color coordinates with triangle point coordinates in my previous versions of my code (in section 1) which were working, but I modified it to match my original section 2 to make my code more consistent,
+// and to help me understand the implementation better.
+//It also helped me debug the 3DUV coordinates along with the drawtriangle3d coordinates, as just copying and pasting coordinates code from my original section 2 was not giving smooth color on each cube side.
     // Front face (already provided) UV
     drawTriangle3DUV([0,0,0,    1,1,0,    1,0,0 ], [0,0,  1,1,  1,0]);
     drawTriangle3DUV([0,0,0,    0,1,0,    1,1,0 ], [0,0,  0,1,  1,1]);

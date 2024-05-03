@@ -427,7 +427,7 @@ function renderAllShapes(){
 // Draw the floor
   var floor = new Cube();
   floor.color = [1.0, 0.0, 0.0, 1.0];
-  floor.textureNum=-1;
+  floor.textureNum=-2;
   floor.matrix.translate(0, -0.75, 0.0);
   floor.matrix.scale(10, 0, 10);
   floor.matrix.translate(-0.5, 0, -0.5);
@@ -444,7 +444,7 @@ function renderAllShapes(){
   //Draw a cube (red one)
   var body = new Cube();
   body.color = [1.0, 0.0, 0.0, 1.0];
-  body.textureNum = 0;
+  body.textureNum = -1;
   body.matrix.translate(-0.25, -0.75, 0.0);
   body.matrix.rotate(-5,1,0,0);
   body.matrix.scale(0.5, 0.3, 0.5);         //this one happens first! Right to left matrix multiplication
