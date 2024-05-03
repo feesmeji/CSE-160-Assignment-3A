@@ -472,6 +472,17 @@ function renderAllShapes(){
   body.matrix.scale(0.5, 0.3, 0.5);         //this one happens first! Right to left matrix multiplication
   body.render();
 
+
+  //Draw a cube (red one)
+  var body2 = new Cube();
+  body2.color = [1.0, 0.0, 0.0, 1.0];
+  body2.textureNum = -1;
+  body2.matrix.translate(0.60, -0.75, 0.0);
+  body2.matrix.rotate(-5,1,0,0);
+  body2.matrix.scale(0.5, 0.3, 0.5);         //this one happens first! Right to left matrix multiplication
+  body2.render();
+
+
   // Draw a yellow left arm
   var leftArm = new Cube();
   leftArm.color = [1,1,0,1];
@@ -494,6 +505,15 @@ function renderAllShapes(){
   box.matrix.scale(0.3, 0.3, 0.3);
   box.matrix.translate(-0.5,0,-0.001);
   box.render();
+
+
+  // //Party hat!!
+  var hat = new Pyramid();
+  hat.color = [0.0, 1.0, 0.0, 1.0];
+  hat.textureNum = 1;
+  hat.matrix.translate(-0.55, -0.5, 1.0);
+  hat.matrix.scale(0.4, 0.4, 0.4);
+  hat.render();
 
   //Check the time at the end of the function, and show on web page
   var duration = performance.now() - startTime;
