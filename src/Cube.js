@@ -6,7 +6,7 @@ class Cube{
         // this.size = 5.0;
         // this.segments = 3;
         this.matrix = new Matrix4();
-        this.textureNum=-1;
+        this.textureNum=0;
     }
     render() {
         // var xy = this.position;
@@ -23,33 +23,29 @@ class Cube{
         gl.uniformMatrix4fv(u_ModelMatrix, false, this.matrix.elements);        
         
     
-//CHATGPT Helped me center the cube on the origin with the correct coordinates.
-//I later mapped out by hand each point on a visualizing tool to make sure it was positioned correctly centered on the origin.
-// I originally was printing cubes on the 1st quadrant which I didn't like.
-    
     // Front face (already provided) UV
     drawTriangle3DUV([0,0,0,    1,1,0,    1,0,0 ], [0,0,  1,1,  1,0]);
     drawTriangle3DUV([0,0,0,    0,1,0,    1,1,0 ], [0,0,  0,1,  1,1]);
 
-    // Right face
-    drawTriangle3DUV([1,0,0,    1,1,1,    1,0,1 ], [0,0,  1,1, 1,0]);
-    drawTriangle3DUV([1,0,0,    1,1,0,    1,1,1 ], [0,0,  0,1, 1,1]);
+    //Back of cube (when drawing things, webgl renders objects closer to the camera when the z coordinate is less than zero. Further away from camera if z axis is greater than zero)
+    drawTriangle3DUV( [0,0,1,  1,1,1,  1,0,1 ], [0,0,  1,1,  1,0]);
+    drawTriangle3DUV( [0,0,1,  0,1,1,  1,1,1 ], [0,0,  0,1,  1,1]);
 
-    // Back face
-    drawTriangle3DUV([0,0,1,    1,1,1,    1,0,1 ], [0, 0, 1, 1, 1, 0]);
-    drawTriangle3DUV([0,0,1,    0,1,1,    1,1,1 ], [0, 0, 0, 1, 1, 1]);
+    //Top of cube
+    drawTriangle3DUV( [0,1,0,   0,1,1,  1,1,1], [0,0,  0,1,  1,1]);
+    drawTriangle3DUV( [0,1,0,   1,1,1,  1,1,0], [0,0,  1,1,  1,0]);
+    
+    //Bottom of cube
+    drawTriangle3DUV( [0,0,0,   0,0,1,  1,0,1], [0,0,  1,1,  1,0]);
+    drawTriangle3DUV( [0,0,0,   1,0,1,  1,0,0], [0,0,  0,1,  1,1]);
 
-    // Left face
-    drawTriangle3DUV([0,0,0,    0,1,1,    0,0,1 ], [0, 0, 1, 1, 1, 0]);
-    drawTriangle3DUV([0,0,0,    0,1,0,    0,1,1 ], [0, 0, 0, 1, 1, 1]);
+    //Right side of cube
+    drawTriangle3DUV([1,1,1,   1,0,1,  1,0,0], [0,0,  1,1,  1,0]);// right side of cube triangle 1
+    drawTriangle3DUV([1,1,1,   1,1,0,  1,0,0], [0,0,  0,1,  1,1]);//right side of cube triangle 2
 
-    // Top face
-    drawTriangle3DUV([0,1,0,    1,1,1,    1,1,0 ], [0, 0, 1, 1, 1, 0]);
-    drawTriangle3DUV([0,1,0,    0,1,1,    1,1,1 ], [0, 0, 0, 1, 1, 1]);
-
-    // Bottom face
-    drawTriangle3DUV([0,0,0,    1,0,1,    1,0,0 ], [0, 0, 1, 1, 1, 0]);
-    drawTriangle3DUV([0,0,0,    0,0,1,    1,0,1 ], [0, 0, 0, 1, 1, 1]);
+    //Left side of triangle
+    drawTriangle3DUV([0,0,0,   0,1,0,   0,1,1], [0,0,  0,1,  1,1]); //left side of cube triangle 1
+    drawTriangle3DUV([0,0,0,   0,0,1,   0,1,1], [0,0,  1,1,  1,0]); //left side of cube triangle 2
 
 // ----------------UV End
 

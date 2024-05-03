@@ -424,6 +424,23 @@ function renderAllShapes(){
   // Clear <canvas>  (rendering points)
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); 
 
+// Draw the floor
+  var floor = new Cube();
+  floor.color = [1.0, 0.0, 0.0, 1.0];
+  floor.textureNum=-1;
+  floor.matrix.translate(0, -0.75, 0.0);
+  floor.matrix.scale(10, 0, 10);
+  floor.matrix.translate(-0.5, 0, -0.5);
+  floor.render();
+
+  //Draw the sky
+  var sky = new Cube();
+  sky.color = [1, 0, 0, 1];
+  sky.textureNum=0;
+  sky.matrix.scale(50,50,50);
+  sky.matrix.translate(-0.5, -0.5, -0.5);
+  sky.render();
+  
   //Draw a cube (red one)
   var body = new Cube();
   body.color = [1.0, 0.0, 0.0, 1.0];
@@ -448,7 +465,7 @@ function renderAllShapes(){
   //Test box (pink box)
   var box = new Cube();
   box.color = [1,0,1,1];
-  box.textureNum = 0;
+  box.textureNum = -1;
   box.matrix = yellowCoordinatesMat;
   box.matrix.translate(0,0.65,0.0,0);
   box.matrix.rotate(g_magentaAngle, 0, 0, 1);
