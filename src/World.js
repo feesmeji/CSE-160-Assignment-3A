@@ -254,12 +254,12 @@ function initTextures() {
     return false;
   }
 
-  
+  //ChatGPT helped me debug this line of code to add new texture (add second parameter for texture unit)
   image.onload = function(){ sendTextureToGLSL(image,0); }; //this will setup function that will run when image is done laoding, runs after laoding is completed
   
   image.src = '../src/sky.jpg';
 
-
+//ChatGPT helped me debug this line of code to add new texture (add second parameter for texture unit)
   image2.onload = function(){ sendTextureToGLSL(image2,1); }; //this will setup function that will run when image is done laoding, runs after laoding is completed
   
   image2.src = '../src/grass.jpg';
@@ -270,11 +270,12 @@ function initTextures() {
 // Add more texture loading
 }
 
+//ChatGPT helped me fix some lines of code in this function to accomodate and also helped me learn how to handle 2 textures in a program.
 function sendTextureToGLSL(image, textureUnit) {
   var texture = gl.createTexture();
-  if (!texture) {
+  if (!texture){
     console.log('Failed to create the texture object');
-    return null;
+    return false;
   }
 
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1);
@@ -283,9 +284,10 @@ function sendTextureToGLSL(image, textureUnit) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, image);
 
-  if (textureUnit === 0) {
+//ChatGPT helped me learn in these if-else statements how to handle using two textures (and additional ones if needed)
+  if (textureUnit == 0) {
     gl.uniform1i(u_Sampler0, textureUnit);
-  } else if (textureUnit === 1) {
+  } else if (textureUnit == 1) {
     gl.uniform1i(u_Sampler1, textureUnit);
   }
 
